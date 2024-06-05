@@ -15,10 +15,10 @@ export async function middleware(req) {
         // const jwtExpiresAt = cookieStore.get('jwtExpiresAt').value;
 
         if ((!token) && authRoutes.includes(requestedPath)) {
-            return NextResponse.redirect('http://localhost:3000/login');
+            return NextResponse.redirect(`${process.env.BASE_Url || 'https://genie-ai0.vercel.app'}/login`);
 
         } else if (token && unAuthRoutes.includes(requestedPath)) {
-            return NextResponse.redirect('http://localhost:3000/');
+            return NextResponse.redirect(process.env.BASE_Url || 'https://genie-ai0.vercel.app/');
 
         }
 
