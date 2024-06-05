@@ -35,10 +35,7 @@ const login = asyncHandler(async (req, res) => {
     });
 
     res.cookie('jwt', token, {
-        sameSite: 'none',
-        secure: true
-    });
-    res.cookie("jwtExpiresAt", expiresAt, {
+        httpOnly: true,
         sameSite: 'none',
         secure: true
     });
@@ -91,14 +88,11 @@ const signup = asyncHandler(async (req, res) => {
     });
 
     res.cookie('jwt', token, {
+        httpOnly:true,
         sameSite: 'none',
         secure: true
     });
-    res.cookie("jwtExpiresAt", expiresAt, {
-        sameSite: 'none',
-        secure: true
-    });
-
+    
     const userObj = newUser.toObject();
     delete userObj.password;
     return res.json(new ApiResponse(200, "Registration completed successfully !", {

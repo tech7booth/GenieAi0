@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const secret = process.env.JWT_TOKEN || 'T7&3#r45%21E945$8#@90k3#9!1O890MI';
-const expiresIn = parseInt(process.env.JWT_EXPIRY)*24*60*60 || 30*24*60*60 ;
+const expiresIn = parseInt(process.env.JWT_EXPIRYO)*24*60*60 || 1*60 ;
 
 /**
  * Generate signed JWT token

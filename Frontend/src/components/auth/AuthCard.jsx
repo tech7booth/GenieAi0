@@ -52,8 +52,14 @@ function AuthCard({ type }) {
     e.preventDefault();
     setPosting(true);
     try {
-      const { data } = await axios.post(`${BASE_URL}/api/v1${api}`, { email, password }, {withCredentials:true});
-      localStorage.setItem('token', JSON.stringify({ value: data?.token, expiresIn: data.expiresIn }))
+      const { data } = await axios.post(`${BASE_URL}/api/v1${api}`, { email, password }, { withCredentials: true });
+      
+      cookieStore.set({
+        name: "token",
+        value: data?.data.token,
+        expires: data?.data.expiresAt
+      });
+
       toast({
         title: 'Success',
         description: data.message,
@@ -118,11 +124,11 @@ function AuthCard({ type }) {
       <ContinueWithGoogle />
       <div className='flex items-center text-white gap-[3px] w-full'><div className='h-[1px] bg-gray-600 w-full'></div><span className='-mt-[2px]'>or</span><div className='h-[1px] bg-gray-600 w-full'></div></div>
 
-      <Button onClick={()=>router.push('/signup')} className={'w-full bg-[#5958587c] border-none font-semibold text-[16px] rounded-l flex items-center h-[45px]'}>
+      <Button onClick={() => router.push('/signup')} className={'w-full bg-[#5958587c] border-none font-semibold text-[16px] rounded-l flex items-center h-[45px]'}>
         Sign Up
       </Button>
 
-      <Button onClick={()=>router.push('/login')} className={'w-full border-none bg-gradient-to-r from-[#05ABD4] to-[#DF8EF5] font-semibold text-[16px] bg-transparent text-black rounded-l flex items-center h-[45px]'}>
+      <Button onClick={() => router.push('/login')} className={'w-full border-none bg-gradient-to-r from-[#05ABD4] to-[#DF8EF5] font-semibold text-[16px] bg-transparent text-black rounded-l flex items-center h-[45px]'}>
         Login
       </Button>
 
