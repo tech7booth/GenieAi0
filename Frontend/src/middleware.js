@@ -5,7 +5,7 @@ import {
     NextResponse
 } from 'next/server';
 
-const unAuthRoutes = ['/auth','/login', '/signup'];
+const unAuthRoutes = ['/auth', '/login', '/signup'];
 const authRoutes = ['/agents/new', '/agents'];
 export async function middleware(req) {
     try {
@@ -14,15 +14,22 @@ export async function middleware(req) {
         const token = cookieStore.get('jwt').value;
         const jwtExpiresAt = cookieStore.get('jwtExpiresAt').value;
 
-        if( (!token || jwtExpiresAt < Date.now()) && authRoutes.includes(requestedPath) ){
+        if ((!token || jwtExpiresAt < Date.now()) && authRoutes.includes(requestedPath)) {
             return NextResponse.redirect('http://localhost:3000/login');
 
-        }else if( token && jwtExpiresAt > Date.now() && unAuthRoutes.includes(requestedPath) ){
+        } else if (token && jwtExpiresAt > Date.now() && unAuthRoutes.includes(requestedPath)) {
             return NextResponse.redirect('http://localhost:3000/');
 
         }
-       
-        return NextResponse.next();
+
+        return NextResponse.next({
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Credentials': 'true' // If needed
+            }
+        });
     } catch (error) {
         console.error('error in middleware', error.message)
     }
