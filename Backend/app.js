@@ -11,11 +11,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
-
-const allowedOrigins = ['http://localhost:3000', 'https://genie-ai0.vercel.app', 'https://genie-ai0.vercel.app'];
-
+app.use((req,res,next)=>{
+    res.set('Access-Control-Allow-Origin', '*');
+    next();
+})
 app.use(cors({
-    origin: "https://genie-ai0.vercel.app",
+    origin: ["https://genie-ai0.vercel.app","https://genie-ai0.vercel.app/"],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
