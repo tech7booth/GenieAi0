@@ -2,7 +2,7 @@ const { Router } = require("express");
 const multer = require("multer");
 const cloudinary = require("../configs/cloudinary.config")
 
-const storage = multer.diskStorage({ destination: "./uploads" });
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const router = Router()
