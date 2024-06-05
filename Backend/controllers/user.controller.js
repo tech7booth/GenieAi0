@@ -4,7 +4,8 @@ const {
     ApiResponse
 } = require("../utils/api.utils");
 const {generateToken} = require("../utils/jwt.utils")
-const User = require("../modals/user.modal")
+const User = require("../modals/user.modal");
+
 
 const login = asyncHandler(async (req, res) => {
     const {
@@ -27,17 +28,20 @@ const login = asyncHandler(async (req, res) => {
 
     const {
         token,
-        expiresIn
+        expiresAt
     } = generateToken({
         userId: user._id,
         role: user.role
     });
 
+    res.cookie('jwt', token);
+    res.cookie("jwtExpiresAt", expiresAt);
+
 
     delete user.toObject().password;
     return res.json(new ApiResponse(200, "Logged in to your account successfully !", {
         token,
-        expiresIn,
+        expiresAt,
         user
     }))
 })
@@ -75,17 +79,20 @@ const signup = asyncHandler(async (req, res) => {
     });
     const {
         token,
-        expiresIn
+        expiresAt
     } = generateToken({
         userId: newUser._id,
         role: newUser.role
     });
 
+    res.cookie('jwt', token);
+    res.cookie("jwtExpiresAt", expiresAt);
+
     const userObj = newUser.toObject();
     delete userObj.password;
     return res.json(new ApiResponse(200, "Registration completed successfully !", {
         token,
-        expiresIn,
+        expiresAt,
         user: userObj
     }))
 })

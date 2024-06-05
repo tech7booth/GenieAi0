@@ -50,8 +50,8 @@ function NavBar() {
 
 
             <div className="flex w-fit gap-2 md:gap-10">
-                <Link href={'/login'} className={buttonVariants() + ' bg-gradient-to-r from-[#05ABD4] border-none to-[#DF8EF5] font-medium text-[16px] text-black rounded-full border-2 px-6'}>Login</Link>
-                <Link href={'/auth'} className={buttonVariants({ variant: "outline" }) + 'border-[#FFFFFF] font-medium text-[16px] bg-transparent text-white rounded-full border-2 px-6'}>Sign Up</Link>
+                <Link href={'/login'} className={buttonVariants() + ' bg-gradient-to-r from-[#05ABD4] border-none to-[#DF8EF5] font-medium text-[16px] text-black z-10 border-2 px-6'}>Login</Link>
+                <Link href={'/auth'} className={buttonVariants({ variant: "outline" }) + 'border-[#FFFFFF] font-medium text-[16px] bg-transparent text-white z-10 border-2 px-6'}>Sign Up</Link>
             </div>
         </div>
     )
@@ -69,8 +69,8 @@ function SmNav() {
             </div>
 
             <div className="flex flex-col gap-2 mb-20 px-6">
-                <Link href={'/login'} className={buttonVariants() + ' bg-gradient-to-r from-[#05ABD4] border-none to-[#DF8EF5] font-medium text-[16px] text-black rounded-full border-2 px-6'}>Login</Link>
-                <Link href={'/auth'} className={buttonVariants({ variant: "outline" }) + 'border-[#FFFFFF] font-medium text-[16px] bg-transparent text-white rounded-full border-2 px-6'}>Sign Up</Link>
+                <Link href={'/login'} className={buttonVariants() + ' bg-gradient-to-r from-[#05ABD4] border-none to-[#DF8EF5] font-medium text-[16px] text-black z-10 border-2 px-6'}>Login</Link>
+                <Link href={'/auth'} className={buttonVariants({ variant: "outline" }) + 'border-[#FFFFFF] font-medium text-[16px] bg-transparent text-white z-10 border-2 px-6'}>Sign Up</Link>
             </div>
         </div>
     )

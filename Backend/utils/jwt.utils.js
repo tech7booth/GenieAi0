@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const secret = process.env.JWT_TOKEN || 'T7&3#r45%21E945$8#@90k3#9!1O890MI';
-const expiresIn = process.env.JWT_EXPIRY || '30d';
+const expiresIn = parseInt(process.env.JWT_EXPIRY)*24*60*60 || 30*24*60*60 ;
 
 /**
  * Generate signed JWT token
@@ -12,10 +12,12 @@ exports.generateToken = (data) => {
     try {
         if (!secret) throw new Error("JWT secret not found");
 
+        const expiresAt = Date.now() + expiresIn*1000
         // generate token
         const token = jwt.sign(data, secret, { expiresIn });
 
-        return { token, expiresIn };
+        console.log(expiresIn)
+        return { token, expiresAt };
     } catch (error) {
         throw new Error(error.message);
     }

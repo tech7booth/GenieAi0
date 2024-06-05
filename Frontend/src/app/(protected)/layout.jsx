@@ -1,11 +1,15 @@
-import AuthProvider from '@/components/auth/AuthProvider'
+import LeftSlide from '@/components/common/LeftSlide'
+import React from 'react'
 
-const Layout = ({children}) => {
-  return (
-    <AuthProvider>
-        {children}
-   </AuthProvider>
-  )
+function Layout({ children }) {
+    return (
+        <div className='flex'>
+            <LeftSlide />
+            <main className='w-full pl-[310px] pt-6'>
+                {children}
+            </main>
+        </div>
+    )
 }
 
 export default Layout

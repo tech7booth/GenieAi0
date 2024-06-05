@@ -15,7 +15,7 @@ app.use(express.urlencoded({extended: true, limit: "16kb"}))
 app.use(cookieParser())
 
 app.use(cors({
-    origin: '*', 
+    origin: ['http://localhost:3000', process.env.FRONTEND_URL, 'https://genie-ai0.vercel.app' ,'*'], 
     credentials: true // Allow cookies to be sent from the frontend
 }))
 

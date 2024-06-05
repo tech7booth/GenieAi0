@@ -7,7 +7,7 @@ import axios from 'axios'
 import { toast } from '../ui/use-toast'
 import Loader from '../common/Loader'
 import { useRouter } from 'next/navigation'
-import BASEURL from '@/utils/apiRoutes'
+import BASE_URL from '@/utils/apiRoutes'
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
@@ -52,7 +52,7 @@ function AuthCard({ type }) {
     e.preventDefault();
     setPosting(true);
     try {
-      const { data } = await axios.post(`${BASE_URL}/api/v${api}`, { email, password });
+      const { data } = await axios.post(`${BASE_URL}/api/v1${api}`, { email, password }, {withCredentials:true});
       localStorage.setItem('token', JSON.stringify({ value: data?.token, expiresIn: data.expiresIn }))
       toast({
         title: 'Success',
