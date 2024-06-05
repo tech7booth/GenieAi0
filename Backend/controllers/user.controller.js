@@ -34,9 +34,14 @@ const login = asyncHandler(async (req, res) => {
         role: user.role
     });
 
-    res.cookie('jwt', token);
-    res.cookie("jwtExpiresAt", expiresAt);
-
+    res.cookie('jwt', token, {
+        sameSite: 'none',
+        secure: true
+    });
+    res.cookie("jwtExpiresAt", expiresAt, {
+        sameSite: 'none',
+        secure: true
+    });
 
     delete user.toObject().password;
     return res.json(new ApiResponse(200, "Logged in to your account successfully !", {
@@ -85,8 +90,14 @@ const signup = asyncHandler(async (req, res) => {
         role: newUser.role
     });
 
-    res.cookie('jwt', token);
-    res.cookie("jwtExpiresAt", expiresAt);
+    res.cookie('jwt', token, {
+        sameSite: 'none',
+        secure: true
+    });
+    res.cookie("jwtExpiresAt", expiresAt, {
+        sameSite: 'none',
+        secure: true
+    });
 
     const userObj = newUser.toObject();
     delete userObj.password;
