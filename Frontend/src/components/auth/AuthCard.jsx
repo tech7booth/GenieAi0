@@ -64,6 +64,7 @@ function AuthCard({ type }) {
         title: 'Success',
         description: data.message,
       });
+      window.location.href = '/agents/new';
     } catch (err) {
       console.error(err);
       toast({
