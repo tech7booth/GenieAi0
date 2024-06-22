@@ -1,19 +1,29 @@
+"use client"
+import AgentCard from '@/components/agents/AgentCard'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
+import {TalkingScreen} from '@/components/common/TalkingScreen'
 
 const Agents = () => {
+    const [talking, setTalking] = useState('');
     return (
         <div className='md:px-24'>
             <h2 className='text-[24px] font-bold flex items-center gap-4 pl-2 my-4'>My Agents <span className='gradient-text text-[14px] ml-1 mt-1'>+ Create new agent</span></h2>
             <div className='flex flex-wrap gap-4 p-2 justify-between'>
-                <AgentCard />
+                <AgentCard setTalking={setTalking} />
+                <CreateAgentCard />
             </div>
+            {talking && (
+                <div className='h-full w-full p-4 fixed top-0 left-0 bg-black bg-opacity-50'>
+                    <TalkingScreen className=' float-right' setTalking={setTalking}/>
+                </div>
+            )}
         </div>
     )
 }
 
-const AgentCard = () => {
+const CreateAgentCard = () => {
     return (
         <div className='bg-[#5c5b5b63] p-4 rounded-xl w-[420px] max-w-full'>
             <Image src={'/circle.png'} width={100} height={100} alt='image' className='h-[110px] w-auto mb-2' />

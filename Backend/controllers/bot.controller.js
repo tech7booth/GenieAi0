@@ -10,7 +10,7 @@ const Agent = require('../utils/models/bot.model');
 const User = require('../utils/models/user.model');
 const axios = require('axios');
 
-// Get agents of user and admin
+// Get agents of user(user's agent) and admin(all agents)
 const getAgents = asyncHandler(async (req, res) => {
     const {
         userId,
@@ -38,6 +38,7 @@ const getAgents = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, "Successfully fetched agents!", agents));
 });
 
+// detail of specific user by id
 const getGentInfo = asyncHandler(async (req, res) => {
     const agentId = params?.id;
     const {
@@ -48,6 +49,7 @@ const getGentInfo = asyncHandler(async (req, res) => {
 
     return res.json(new ApiResponse(200, "Agent fetched.", data))
 })
+
 // Create agent
 const createAgent = asyncHandler(async (req, res) => {
     const {
@@ -61,7 +63,8 @@ const createAgent = asyncHandler(async (req, res) => {
         feededData,
         visibility,
         onlyCriticalKnowledge,
-        feededFiles
+        feededFiles,
+        prompt
     } = req.body;
 
     const playBody = {
@@ -88,6 +91,11 @@ const createAgent = asyncHandler(async (req, res) => {
 
     const agent = await Agent.create({
         name,
+        voice,
+        greeting,
+        prompt,
+        visibility,
+        onlyCriticalKnowledge,
         description,
         feededData,
         feededFiles,
@@ -128,7 +136,7 @@ const updateAgent = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, "Agent updated successfully!", agent));
 });
 
-// Delete agent
+// Delete agent user(only theirs) and admin(any bot)
 const deleteAgent = asyncHandler(async (req, res) => {
     const {
         userId,
@@ -143,7 +151,7 @@ const deleteAgent = asyncHandler(async (req, res) => {
     }
 
     const agent = await Agent.findById(agentId);
-    if (role === "Admin" || (agent && agent.user.equals(userId))) {
+    if (role == "Admin" || (agent && agent.user.equals(userId))) {
         await agent.deleteOne();
         res.status(200).json(new ApiResponse(200, "Agent deleted successfully!"));
     } else {

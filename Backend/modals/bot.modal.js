@@ -10,6 +10,14 @@ const agentSchema = new Schema({
     description: {
         type: String
     },
+    greeting:String,
+    visibility:{
+        type:String,
+        enum:["Public", "Private"],
+        default:"Public"
+    },
+    onlyCriticalKnowledge:Boolean,
+    prompt:String,
     feededData: String,
     feededFiles: [{
         name: String,
