@@ -4,20 +4,33 @@ import { Visualizer } from 'react-sound-visualizer';
 import { Mic, MoreHorizontalIcon, X } from 'lucide-react'
 import Image from 'next/image'
 
-const socketUri = 'wss://api.play.ai/v1/talk/My-Agent-22Qd_XpnPn1_3Q76ZNnjQ';
+const socketUri = 'wss://api.play.ai/v1/talk/trialbot-XpKwMXq0hu2KaMpJmJpcb';
 
 export function TalkingScreen({ className, apiKey, phone, name, description, setTalking }) {
   const ws = useRef(null);
   const [wsStatus, setWsStatus] = useState(false)
   const [messages, setMessages] = useState([]);
+  const [base64audio, setBase64audio] = useState('');
+  const [playingSource, setPlayingSource] = useState('');
 
   const wsConfig = {
     type: 'setup',
-    apiKey: "ak-05413439f7a642188f1f6ae0650e1731",
+    apiKey: "ak-121e5293756f4e01906c8ff5cd289df3",
     outputFormat: "mp3",
     outputSampleRate: 24000,
     inputEncoding: "media-container"
   }
+
+  function isBase64(str) {
+    try {
+      const check = btoa(atob(str)) === str;
+      console.log("str check", check)
+      return check
+    } catch (err) {
+      return false;
+    }
+  }
+
 
   useEffect(() => {
     ws.current = new WebSocket(socketUri); // Replace with your WebSocket URL
@@ -29,10 +42,32 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
       setWsStatus(true)
     };
 
-    ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log('Message from server:', data);
-      setMessages((prevMessages) => [...prevMessages, data]);
+    // playAudio("")
+    playAudio("")
+    ws.current.onmessage = async (res) => {
+      const event = JSON.parse(res.data);
+
+      if(event.type == "voiceActivityStart"){
+        if(playingSource){
+        playingSource.stop();
+        }
+        setBase64audio('');
+      }
+      else if (event.type == "newAudioStream") {
+        // playAudio(base64audio);
+        setBase64audio('');
+      }
+      else if (event.type == "audioStream") {
+        if (isBase64(event.data)) {
+          // console.log(event.data)
+          // playAudio(event.data)
+          setBase64audio(prev => prev + event.data)
+        } else {
+          console.error('Invalid base64 data');
+        }
+
+      }
+      setMessages((prevMessages) => [...prevMessages, event.data]);
     };
 
     ws.current.onclose = () => {
@@ -51,7 +86,38 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
       }
     };
   }, []);
+  // useEffect(()=>console.log(base64audio), [base64audio])
 
+
+  async function playAudio(base64Data) {
+    try {
+      // Deserialize event.data from a base64 string to binary
+      const binaryString = atob(base64Data);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // Stop the current playing audio if any
+      if (playingSource) {
+        playingSource.stop();
+      }
+
+      // play audio using Web Audio Api
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffer = await audioContext.decodeAudioData(bytes.buffer);
+      // console.log(audioBuffer)
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContext.destination);
+      source.start(0);
+
+      setPlayingSource(source);
+    } catch (err) {
+      console.error("error in playing audio", err)
+    }
+  }
 
   return (
     <div className={`border w-[450px] p-4 h-full bg-black border-white rounded-[20px] ${className}`}>
@@ -98,8 +164,10 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
   )
 }
 
+
 export function AudioRecorder({ ws }) {
-  const [audio, setAudio] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
 
   async function blobToBase64(blob) {
     const reader = new FileReader();
@@ -109,7 +177,7 @@ export function AudioRecorder({ ws }) {
     });
   }
 
-  const recordAudio = async () => {
+  const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         channelCount: 1,
@@ -118,22 +186,52 @@ export function AudioRecorder({ ws }) {
         noiseSuppression: true,
       },
     });
-    const mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = async (event) => {
-      const base64Data = await blobToBase64(event.data);
+    mediaRecorderRef.current = new MediaRecorder(stream);
 
-      console.log("hi")
-      // Relevant:
-      ws.current.send(JSON.stringify({ type: 'audioIn', data: base64Data }));
+    mediaRecorderRef.current.ondataavailable = async (event) => {
+      if (event.data.size > 0) {
+        const base64Data = await blobToBase64(event.data);
+        // console.log("Recorded audio data (base64):", base64Data);
+        ws.current.send(JSON.stringify({ type: 'audioIn', data: base64Data }));
+        console.log("send data")
+      }
     };
-  }
-  useEffect(() => {
 
-  }, []);
+    mediaRecorderRef.current.start(1000); // Collect data in chunks of 1 second
+    setIsRecording(true);
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      setIsRecording(false);
+    }
+  };
 
   return (
-    <div className='rounded-full size-40 bg-white'>
-    </div>
-  )
+    <>
+      <audio controls>
+        <source src="data:audio/mp3;base64,
+
+  "
+          type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+
+
+      <div className='rounded-full size-40 bg-white flex items-center justify-center'>
+        {isRecording ? (
+          <button onClick={stopRecording} className='bg-red-500 p-2 rounded-full'>
+            Stop
+          </button>
+        ) : (
+          <button onClick={startRecording} className='bg-green-500 p-2 rounded-full'>
+            Start
+          </button>
+        )}
+      </div>
+    </>
+  );
 }
 
