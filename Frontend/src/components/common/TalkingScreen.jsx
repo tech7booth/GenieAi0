@@ -12,6 +12,7 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
   const [messages, setMessages] = useState([]);
   const [base64audio, setBase64audio] = useState('');
   const [playingSource, setPlayingSource] = useState('');
+  
 
   const wsConfig = {
     type: 'setup',
@@ -24,7 +25,6 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
   function isBase64(str) {
     try {
       const check = btoa(atob(str)) === str;
-      console.log("str check", check)
       return check
     } catch (err) {
       return false;
@@ -43,13 +43,12 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
     };
 
     // playAudio("")
-    playAudio("")
     ws.current.onmessage = async (res) => {
       const event = JSON.parse(res.data);
 
-      if(event.type == "voiceActivityStart"){
-        if(playingSource){
-        playingSource.stop();
+      if (event.type == "voiceActivityStart") {
+        if (playingSource) {
+          playingSource.stop();
         }
         setBase64audio('');
       }
@@ -59,9 +58,9 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
       }
       else if (event.type == "audioStream") {
         if (isBase64(event.data)) {
-          // console.log(event.data)
+          // console.log(event.data, base64audio, 'busa bu')
           // playAudio(event.data)
-          setBase64audio(prev => prev + event.data)
+          setBase64audio(prev=>prev+event.data);
         } else {
           console.error('Invalid base64 data');
         }
@@ -85,8 +84,12 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
         ws.current.close();
       }
     };
+
   }, []);
-  // useEffect(()=>console.log(base64audio), [base64audio])
+
+  // useEffect(() => {
+  //   console.log(base64audio)
+  // }, [base64audio])
 
 
   async function playAudio(base64Data) {
@@ -118,6 +121,7 @@ export function TalkingScreen({ className, apiKey, phone, name, description, set
       console.error("error in playing audio", err)
     }
   }
+
 
   return (
     <div className={`border w-[450px] p-4 h-full bg-black border-white rounded-[20px] ${className}`}>

@@ -38,8 +38,8 @@ const getAgents = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, "Successfully fetched agents!", agents));
 });
 
-// detail of specific user by id
-const getGentInfo = asyncHandler(async (req, res) => {
+// detail of specific agent by id
+const getAgentInfo = asyncHandler(async (req, res) => {
     const agentId = params?.id;
     const {
         data
@@ -164,7 +164,7 @@ const botController = {
     getAgents,
     updateAgent,
     deleteAgent,
-    getGentInfo
+    getAgentInfo
 }
 
 module.exports = botController

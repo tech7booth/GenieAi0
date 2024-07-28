@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const multer = require("multer");
-const cloudinary = require("../configs/cloudinary.config")
+const cloudinary = require("../configs/cloudinary.config");
+const botController = require("../controllers/bot.controller");
+const { getUserInfo } = require("../controllers/user.controller");
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -26,6 +28,15 @@ router.post('/upload', upload.array('files', 10), async (req, res) => {
         res.status(500).json(new ApiError(500, "An error occurred during the upload process."));
     }
 });
+
+router.get('/user-info', getUserInfo);
+
+
+router.get('/agents', botController.getAgents);
+router.get('/agent/:id', botController.getAgentInfo);
+router.post('/agent', botController.createAgent);
+router.put('/agent', botController.updateAgent);
+router.delete('/agent', botController.deleteAgent);
 
 module.exports = router;
 

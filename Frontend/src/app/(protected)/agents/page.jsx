@@ -8,7 +8,7 @@ import {TalkingScreen} from '@/components/common/TalkingScreen'
 const Agents = () => {
     const [talking, setTalking] = useState('');
     return (
-        <div className='md:px-24'>
+        <div className='md:px-24 mt-6'>
             <h2 className='text-[24px] font-bold flex items-center gap-4 pl-2 my-4'>My Agents <span className='gradient-text text-[14px] ml-1 mt-1'>+ Create new agent</span></h2>
             <div className='flex flex-wrap gap-4 p-2 justify-between'>
                 <AgentCard setTalking={setTalking} />
